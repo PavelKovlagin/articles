@@ -10,7 +10,7 @@ use App;
 class ArticleController extends Controller
 {
     public function showArticles(){
-        $articles = App\Article::selectArticles()->get();
+        $articles = App\Article::selectArticles();
         return view("articles.articles", [
         'title' => 'Статьи',
         'articles' => $articles
@@ -18,8 +18,10 @@ class ArticleController extends Controller
     }
 
     public function showArticle($article_id) {
-        $article = App\Article::selectArticle($article_id)->first();
+        $article = App\Article::selectArticle($article_id);
         $authUser = App\User::selectAuthUser();
+        $likes = App\Voice::getArticleLike($article->article_id);
+        $dislikes = App\Voice::getArticleDislike($article->article_id);
         return view("articles.article", [
             'authUser' => $authUser,
             'article' => $article
@@ -38,7 +40,7 @@ class ArticleController extends Controller
 
     public function updateArticle(Request $request) {
         $authUser = App\User::selectAuthUser();
-        $article = App\Article::selectArticle($request->article_id)->first();
+        $article = App\Article::selectArticle($request->article_id);
         if ($article && $authUser->user_id == $article->user_id) {
             App\Article::updateArticle($request);
             return back()->with(["message" => "Статья обновлени"]);

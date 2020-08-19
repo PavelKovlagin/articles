@@ -15,12 +15,14 @@
             <th> Название статьи </th>
             <th> Описание статьи </th>
             <th> Автор статьи </th>
+            <th> Рейтинг </th>
         </tr>
         @foreach ($articles as $article)
         <tr>
             <th> {{$article->article_name}} </th>            
             <th> {{$article->article_description}} </th>
             <th> {{$article->user_name}} {{$article->user_surname}} </th>
+            <th> @if ($article->rating == null) 0 @else {{$article->rating}} @endif </th>
             <th> <a href="/articles/{{$article->article_id}}"> Подробно </a></th>
         </tr>
         @endforeach
