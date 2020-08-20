@@ -20,7 +20,11 @@ class ArticleController extends Controller
     public function showArticle($article_id) {
         $article = App\Article::selectArticle($article_id);
         $authUser = App\User::selectAuthUser();
-        $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
+        if ($authUser <> false) {
+            $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
+        } else {
+            $vote = null;
+        }        
         return view("articles.article", [
             'authUser' => $authUser,
             'article' => $article,
