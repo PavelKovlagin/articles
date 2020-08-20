@@ -22,15 +22,22 @@ class ArticleController extends Controller
         $article = App\Article::selectArticle($article_id);
         $authUser = App\User::selectAuthUser();
 <<<<<<< 84aa1f198760aee8566699176f2e06e49f7da400
+<<<<<<< 84aa1f198760aee8566699176f2e06e49f7da400
         $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
 =======
+=======
+>>>>>>> Refactoring
         if ($authUser <> false) {
             $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
         } else {
             $vote = null;
+<<<<<<< 84aa1f198760aee8566699176f2e06e49f7da400
         }       
         
 >>>>>>> log, events, listeners
+=======
+        }        
+>>>>>>> Refactoring
         return view("articles.article", [
             'authUser' => $authUser,
             'article' => $article,
