@@ -20,11 +20,11 @@ class ArticleController extends Controller
     public function showArticle($article_id) {
         $article = App\Article::selectArticle($article_id);
         $authUser = App\User::selectAuthUser();
-        $likes = App\Voice::getArticleLike($article->article_id);
-        $dislikes = App\Voice::getArticleDislike($article->article_id);
+        $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
         return view("articles.article", [
             'authUser' => $authUser,
-            'article' => $article
+            'article' => $article,
+            'vote' => $vote
         ]);
     }
 
@@ -35,6 +35,17 @@ class ArticleController extends Controller
             return redirect('/articles');
         } else {             
             return back()->with(["message" => "Пользователь не авторизован"]);
+        }
+    }
+
+    public function deleteArticle(Request $request) {
+        $authUser = App\User::selectAuthUser();
+        $article = App\Article::selectArticle($request->article_id);
+        if ($authUser->user_id == $article->user_id) {
+            App\Article::destroy($article->article_id);
+            return redirect('/articles')->with(["message" => "Статья удалена"]);
+        } else {
+            return back()->with(["message" => "Ошшибка удаления статьи"]);
         }
     }
 

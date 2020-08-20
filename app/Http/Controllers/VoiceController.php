@@ -4,82 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Voice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App;
 
 class VoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Voice  $voice
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Voice $voice)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Voice  $voice
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Voice $voice)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Voice  $voice
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Voice $voice)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Voice  $voice
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Voice $voice)
-    {
-        //
+    public function putVote(Request $request) {
+        $vote = App\Voice::selectVote(Auth::user()->id, $request->article_id)->first();
+        if ($vote) {
+            switch ($request->vote){
+                case 'like':
+                    if ($vote->vote == 0) App\Voice::updateVote(Auth::user()->id, $request->article_id, 1);
+                    if ($vote->vote == -1) App\Voice::updateVote(Auth::user()->id, $request->article_id, 0);
+                break;
+                case 'dislike':
+                    if ($vote->vote == 1) App\Voice::updateVote(Auth::user()->id, $request->article_id, 0);
+                    if ($vote->vote == 0) App\Voice::updateVote(Auth::user()->id, $request->article_id, -1);
+                break;
+            }
+        } else {
+            switch ($request->vote){
+                case 'like':
+                    App\Voice::insertVote(Auth::user()->id, $request->article_id, 1);
+                break;
+                case 'dislike':
+                    App\Voice::insertVote(Auth::user()->id, $request->article_id, -1);
+                break;
+            }
+        }
+        return back()->with(["message" => "Спасибо за голос"]);
     }
 }

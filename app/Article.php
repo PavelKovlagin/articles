@@ -20,9 +20,10 @@ class Article extends Model
             surname as user_surname,
             address as user_address,
             email as user_email,
-            (SELECT sum(voices.like = 1) FROM articles.voices WHERE articles.id = voices.article_id) -
-            (SELECT sum(voices.like = 0) FROM articles.voices WHERE articles.id = voices.article_id) as `rating`
-            FROM articles.articles, articles.users WHERE articles.user_id = users.id;"
+            (SELECT sum(voices.vote = 1) FROM articles.voices WHERE articles.id = voices.article_id) -
+            (SELECT sum(voices.vote = -1) FROM articles.voices WHERE articles.id = voices.article_id) as `rating`
+            FROM articles.articles, articles.users WHERE articles.user_id = users.id
+            ORDER BY rating DESC;"
         );
         // $articles = DB::table('articles')
         // ->join('users', 'user_id', '=', "users.id")
@@ -56,7 +57,9 @@ class Article extends Model
             users.name as user_name,
             surname as user_surname,
             address as user_address,
-            email as user_email
+            email as user_email,
+            (SELECT sum(voices.vote = 1) FROM articles.voices WHERE articles.id = voices.article_id) as `likes`,
+            (SELECT sum(voices.vote = -1) FROM articles.voices WHERE articles.id = voices.article_id) as `dislikes`
             FROM articles.articles, articles.users 
             WHERE articles.user_id = users.id AND articles.id = $article_id;"
         );

@@ -34,3 +34,7 @@ Route::get('/articles/{article_id}', 'ArticleController@showArticle');
 Route::post('/addArticle', 'ArticleController@insertArticle');
 
 Route::post('/updateArticle', 'ArticleController@updateArticle');
+
+Route::post('/putVote', 'VoiceController@putVote');
+
+Route::post('/deleteArticle', 'ArticleController@deleteArticle');
