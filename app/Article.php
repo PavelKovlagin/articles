@@ -67,7 +67,7 @@ class Article extends Model
     }
 
     protected static function updateArticle($request) {
-        DB::table('articles')
+        $article = DB::table('articles')
         ->where('articles.id', '=', $request->article_id)
         ->update(array('name' => $request->article_name,
                         'description' => $request->article_description,
@@ -82,6 +82,6 @@ class Article extends Model
         $article->name = $request->article_name;
         $article->description = $request->article_description;
         $article->save();
-        return $article->id;
+        return $article;
     }
 }

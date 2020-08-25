@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use Illuminate\Http\Request;
+use App\Events\onAddArticle;
 use DB;
 use App;
 
@@ -20,7 +21,16 @@ class ArticleController extends Controller
     public function showArticle($article_id) {
         $article = App\Article::selectArticle($article_id);
         $authUser = App\User::selectAuthUser();
+<<<<<<< 84aa1f198760aee8566699176f2e06e49f7da400
         $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
+=======
+        if ($authUser <> false) {
+            $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
+        } else {
+            $vote = null;
+        }       
+        
+>>>>>>> log, events, listeners
         return view("articles.article", [
             'authUser' => $authUser,
             'article' => $article,
@@ -29,9 +39,10 @@ class ArticleController extends Controller
     }
 
     public function insertArticle(Request $request) {
-        $authUser = App\User::selectAuthUser();
+        $authUser = App\User::selectAuthUser();         
         if ($authUser <> false) {
-            App\Article::insertArticle($authUser->user_id, $request);
+            $article = App\Article::insertArticle($authUser->user_id, $request);
+            event(new onAddArticle($article, $authUser)); 
             return redirect('/articles');
         } else {             
             return back()->with(["message" => "Пользователь не авторизован"]);
@@ -52,8 +63,10 @@ class ArticleController extends Controller
     public function updateArticle(Request $request) {
         $authUser = App\User::selectAuthUser();
         $article = App\Article::selectArticle($request->article_id);
+        //return dd($article->article_name);
         if ($article && $authUser->user_id == $article->user_id) {
             App\Article::updateArticle($request);
+            event('onUpdateArticle', [$article, $authUser, $request->article_name]);
             return back()->with(["message" => "Статья обновлени"]);
         } else {
             return back()->with(["message" => "Статья не обновлена"]);
