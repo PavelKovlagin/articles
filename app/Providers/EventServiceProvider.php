@@ -7,6 +7,8 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+use Log;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -15,9 +17,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
+        'App\Events\onAddArticle' => [
+            'App\Listeners\LogAddArticle'
+        ]
     ];
 
     /**
@@ -29,6 +31,8 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        //
+        Event::listen('onUpdateArticle', function($article, $user, $new_article_name){
+            Log::info('Update new article', ['Username: ' . $user->user_name, 'Old article name: ' . $article->article_name, 'New article name: ' . $new_article_name]);
+        });
     }
 }
