@@ -21,16 +21,20 @@ class ArticleController extends Controller
     public function showArticle($article_id) {
         $article = App\Article::selectArticle($article_id);
         $authUser = App\User::selectAuthUser();
+<<<<<<< HEAD
 <<<<<<< 84aa1f198760aee8566699176f2e06e49f7da400
 <<<<<<< 84aa1f198760aee8566699176f2e06e49f7da400
         $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
 =======
 =======
 >>>>>>> Refactoring
+=======
+>>>>>>> master
         if ($authUser <> false) {
             $vote = App\Voice::selectVote($authUser->user_id, $article->article_id)->first();
         } else {
             $vote = null;
+<<<<<<< HEAD
 <<<<<<< 84aa1f198760aee8566699176f2e06e49f7da400
         }       
         
@@ -38,6 +42,10 @@ class ArticleController extends Controller
 =======
         }        
 >>>>>>> Refactoring
+=======
+        }       
+        
+>>>>>>> master
         return view("articles.article", [
             'authUser' => $authUser,
             'article' => $article,
